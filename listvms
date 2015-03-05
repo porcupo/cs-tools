@@ -1,0 +1,31 @@
+#!/usr/bin/env ruby
+
+require 'cloudstack_ruby_client'
+require 'yaml'
+csconfig = YAML::load_file("csconfig.yaml")
+
+URL = csconfig[:url]
+APIKEY = csconfig[:apikey]
+SECKEY = csconfig[:seckey]
+
+client = CloudstackRubyClient::Client.new(URL,APIKEY,SECKEY, false)
+
+count = client.list_virtual_machines['count']
+
+total_pages = (count.to_f / 500).ceil
+iterator = 1
+pagesize = 500
+
+vms = []
+
+while (iterator <= total_pages) do
+  vcur = client.list_virtual_machines({'page' => iterator, 'pagesize' => pagesize})
+  vcur['virtualmachine'].each do |vm|
+    vms << vm
+  end
+  iterator +=1
+end
+
+vms.each do |vm|
+  printf "%-45s %-30s %-15s %-40s\n" % [ vm['displayname'], vm['templatename'], vm['nic'][0]['ipaddress'], vm['id'] ]
+end

@@ -1,0 +1,3 @@
+:url:    'cloudstack api URL'
+:apikey: 'API Key'
+:seckey: 'API Secret'

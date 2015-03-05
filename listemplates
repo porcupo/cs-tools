@@ -1,0 +1,18 @@
+#!/usr/bin/env ruby
+
+require 'cloudstack_ruby_client'
+
+require 'yaml'
+csconfig = YAML::load_file("csconfig.yaml")
+
+URL = csconfig[:url]
+APIKEY = csconfig[:apikey]
+SECKEY = csconfig[:seckey]
+
+client = CloudstackRubyClient::Client.new(URL,APIKEY,SECKEY, false)
+
+temps = client.list_templates({"listall" => "true", "templatefilter" => "self"})
+
+temps['template'].each do |t|
+  printf "%-31s %-10s %-37s\n" % [ t['name'], t['zonename'], t['id'] ]
+end

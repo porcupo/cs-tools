@@ -1,0 +1,18 @@
+#!/usr/bin/env ruby
+
+require 'cloudstack_ruby_client'
+require 'pp'
+require 'yaml'
+csconfig = YAML::load_file("csconfig.yaml")
+
+URL = csconfig[:url]
+APIKEY = csconfig[:apikey]
+SECKEY = csconfig[:seckey]
+
+client = CloudstackRubyClient::Client.new(URL,APIKEY,SECKEY, false)
+
+networks = client.list_networks({"listall" => "true"})
+
+networks['network'].each do |n|
+  printf "%-31s %-10s %-37s\n" % [ n['name'], n['zonename'], n['id'] ]
+end

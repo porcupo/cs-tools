@@ -1,0 +1,18 @@
+#!/usr/bin/env ruby
+
+require 'cloudstack_ruby_client'
+
+require 'yaml'
+csconfig = YAML::load_file("csconfig.yaml")
+
+URL = csconfig[:url]
+APIKEY = csconfig[:apikey]
+SECKEY = csconfig[:seckey]
+
+client = CloudstackRubyClient::Client.new(URL,APIKEY,SECKEY, false)
+
+isos = client.list_isos({"listall" => "true", "isofilter" => "self"})
+
+isos['iso'].each do |i|
+  printf "%-31.31s %-10.10s %-37.37s\n" % [ i['name'], i['zonename'], i['id'] ]
+end
